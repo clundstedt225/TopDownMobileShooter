@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
+    //Fields set at design time
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private FixedJoystick joystick;
 
