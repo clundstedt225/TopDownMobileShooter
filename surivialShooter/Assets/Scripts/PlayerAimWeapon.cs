@@ -22,20 +22,21 @@ public class PlayerAimWeapon : MonoBehaviour
             Touch touch = Input.GetTouch(i);
 
             //On begin, should check for ignore 
-            if (touch.phase == TouchPhase.Began) {
+            if (touch.phase == TouchPhase.Began) 
+            {
                 IgnoreCheck(touch.fingerId);
             }
 
             //Handle aiming for finger id's not in ignore list
-            if (!IdsToIgnore.Contains(touch.fingerId))
+            if (!IdsToIgnore.Contains(touch.fingerId)) 
             {
                 HandleAiming(touch);
             }
 
             //Remove id from list if it's being ignored
-            if (touch.phase == TouchPhase.Ended)
+            if (touch.phase == TouchPhase.Ended) 
             {
-                if (IdsToIgnore.Contains(touch.fingerId))
+                if (IdsToIgnore.Contains(touch.fingerId)) 
                 {
                     IdsToIgnore.Remove(touch.fingerId);
                 }
@@ -43,13 +44,15 @@ public class PlayerAimWeapon : MonoBehaviour
         }
     }
 
+    //Aim weapon transform in fingers direction
     void HandleAiming(Touch touch)
     {
-        Vector3 fPos = Camera.main.ScreenToWorldPoint(touch.position);
-        fPos.z = 0f;
+        //Convert screen coords to world position
+        Vector3 fingerPos = Camera.main.ScreenToWorldPoint(touch.position);
+        fingerPos.z = 0f;
 
         //Get the player to finger direction
-        Vector3 aimDir = (fPos - transform.position).normalized;
+        Vector3 aimDir = (fingerPos - transform.position).normalized;
 
         //Get angle in radians, then convert to degrees by multiplying
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
@@ -58,7 +61,7 @@ public class PlayerAimWeapon : MonoBehaviour
         aimTransform.eulerAngles = new Vector3(0, 0, angle);      
     }
 
-    //Should this finger id be ignored by game logic
+    //Should this finger id be ignored by game logic?
     void IgnoreCheck(int id)
     {
         //Check if current touch qualifies to be ignored
