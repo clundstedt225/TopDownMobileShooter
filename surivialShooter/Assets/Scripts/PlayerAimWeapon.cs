@@ -10,18 +10,14 @@ public class PlayerAimWeapon : MonoBehaviour
 {
     [SerializeField] private Transform aimTransform;
 
-    //List of touch ids to ignore???
+    //List of touch ids to ignore
     List<int> IdsToIgnore = new List<int>();
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(Input.touchCount);
-
-        int tapCount = Input.touchCount;
-
         //Loop through all active screen touches
-        for (var i = 0; i < tapCount; i++)
+        for (var i = 0; i < Input.touchCount; i++)
         {
             Touch touch = Input.GetTouch(i);
 
@@ -36,7 +32,7 @@ public class PlayerAimWeapon : MonoBehaviour
                 HandleAiming(touch);
             }
 
-            //Remove id from list if being ignored
+            //Remove id from list if it's being ignored
             if (touch.phase == TouchPhase.Ended)
             {
                 if (IdsToIgnore.Contains(touch.fingerId))
