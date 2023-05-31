@@ -8,84 +8,71 @@ using UnityEngine.UI;
 
 public class PlayerAimWeapon : MonoBehaviour
 {
-
     [SerializeField] private Transform aimTransform;
 
-    //UI raycast 
-    [SerializeField] private GraphicRaycaster m_Raycaster; //On canvas
-    [SerializeField] private EventSystem m_EventSystem; //In scene
-    private PointerEventData m_PointerEventData;
-
-    private void Start()
-    {
-        //Set up the new Pointer Event
-        m_PointerEventData = new PointerEventData(m_EventSystem);
-    }
+    //List of touch ids to ignore???
+    List<int> IdsToIgnore = new List<int>();
 
     // Update is called once per frame
     void Update()
     {
-        //Should we handle aiming logic
-        if (Input.touchCount > 0) { 
-            //Update weapon aim
-            HandleAiming();
+        //Debug.Log(Input.touchCount);
+
+        int tapCount = Input.touchCount;
+
+        //Loop through all active screen touches
+        for (var i = 0; i < tapCount; i++)
+        {
+            Touch touch = Input.GetTouch(i);
+
+            //On begin, should check for ignore 
+            if (touch.phase == TouchPhase.Began) {
+                IgnoreCheck(touch.fingerId);
+            }
+
+            //Handle aiming for finger id's not in ignore list
+            if (!IdsToIgnore.Contains(touch.fingerId))
+            {
+                HandleAiming(touch);
+            }
+
+            //Remove id from list if being ignored
+            if (touch.phase == TouchPhase.Ended)
+            {
+                if (IdsToIgnore.Contains(touch.fingerId))
+                {
+                    IdsToIgnore.Remove(touch.fingerId);
+                }
+            }
         }
     }
 
-    void HandleAiming()
+    void HandleAiming(Touch touch)
     {
-        Touch touch = Input.GetTouch(0);
         Vector3 fPos = Camera.main.ScreenToWorldPoint(touch.position);
         fPos.z = 0f;
 
-        //Set the Pointer Event Position to that of the touch position
-        Vector2 touchPosWorld2D = new Vector2(fPos.x, fPos.y);
-        m_PointerEventData.position = touchPosWorld2D;
+        //Get the player to finger direction
+        Vector3 aimDir = (fPos - transform.position).normalized;
 
-        //Create a list of Raycast Results
-        List<RaycastResult> results = new List<RaycastResult>();
+        //Get angle in radians, then convert to degrees by multiplying
+        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
 
-        //Raycast using the Graphics Raycaster and mouse click position
-        m_Raycaster.Raycast(m_PointerEventData, results);
+        //Apply rotation
+        aimTransform.eulerAngles = new Vector3(0, 0, angle);      
+    }
 
-        //For every result returned, output the name of the GameObject on the Canvas hit by the Ray
-        foreach (RaycastResult result in results)
+    //Should this finger id be ignored by game logic
+    void IgnoreCheck(int id)
+    {
+        //Check if current touch qualifies to be ignored
+        if (EventSystem.current.IsPointerOverGameObject(id))
         {
-            Debug.Log("Hit " + result.gameObject.name);
-        }
-
-        /*
-
-        //2d raycast (UI may be different???)
-        Vector2 touchPosWorld2D = new Vector2(fPos.x, fPos.y);
-        RaycastHit2D hitInformation = Physics2D.Raycast(touchPosWorld2D, Camera.main.transform.forward);
-        
-        //GameObject touchedObject = hitInformation.transform.gameObject;
-        
-        if (hitInformation.collider != null)
-        {
-            Debug.Log("Hit info: " + hitInformation.collider.name);
-        
-            if (hitInformation.transform.gameObject.GetComponent<FixedJoystick>())
+            //Add if not already in list
+            if (!IdsToIgnore.Contains(id))
             {
-                Debug.Log("FOUND JOYSTICK!!!");
+                IdsToIgnore.Add(id);
             }
-        } 
-        */
-
-        /*
-        //If not a joystick, then aim
-        if (!hitInformation || !hitInformation.transform.gameObject.GetComponent<FixedJoystick>())
-        {
-
-            //Get the player to finger direction
-            Vector3 aimDir = (fPos - transform.position).normalized;
-
-            //Get angle in radians, then convert to degrees by multiplying
-            float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-
-            //Apply rotation
-            aimTransform.eulerAngles = new Vector3(0, 0, angle);
-        } */
+        }
     }
 }
