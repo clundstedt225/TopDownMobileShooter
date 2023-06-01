@@ -31,6 +31,9 @@ public class PlayerAimWeapon : MonoBehaviour
             if (!IdsToIgnore.Contains(touch.fingerId)) 
             {
                 HandleAiming(touch);
+
+                //If theres a gun, call its shoot method
+                GetComponentInChildren<Gun>().Shoot(touch);
             }
 
             //Remove id from list if it's being ignored
