@@ -30,7 +30,7 @@ public class PlayerAimWeapon : MonoBehaviour
             //Handle aiming for finger id's not in ignore list
             if (!IdsToIgnore.Contains(touch.fingerId)) 
             {
-                HandleAiming(touch);
+                //HandleAiming(touch);
 
                 //If theres a gun, call its shoot method
                 GetComponentInChildren<Gun>().Shoot(touch);
@@ -47,6 +47,7 @@ public class PlayerAimWeapon : MonoBehaviour
         }
     }
 
+    //TODO: flip gun sprite at certain angle
     //Aim weapon transform in fingers direction
     void HandleAiming(Touch touch)
     {

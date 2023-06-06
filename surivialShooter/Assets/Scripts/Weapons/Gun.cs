@@ -6,6 +6,7 @@ using UnityEngine;
 
 public abstract class Gun : MonoBehaviour
 {
+    [SerializeField]
     protected Transform barrelPos;
 
     public virtual void Shoot(Touch touch)
