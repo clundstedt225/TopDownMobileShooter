@@ -36,6 +36,15 @@ public class SemiAutoGun : Gun
                 Debug.Log("Bullet hit a wild " + hit.transform.name);
                 barrelPos.GetComponent<LineRenderer>().SetPosition(0, barrelPos.position);
                 barrelPos.GetComponent<LineRenderer>().SetPosition(1, hit.point);
+
+                IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+
+                //Check for damage interface
+                if (damageable != null)
+                {
+                    damageable.Damage(5);
+                }
+
             } else
             {
                 Debug.Log("Bullet hit nothing");
