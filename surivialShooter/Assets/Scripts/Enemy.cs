@@ -12,6 +12,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField]
     private float moveSpeed = 2f;
 
+    //Whats the closest the enemy should get?
+    [SerializeField]
+    private float maxDistance = 1f;
+
     //How much health to damage player
     [SerializeField]
     private int attackDamage = 5;
@@ -19,15 +23,57 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField]
     private Transform healthBar;
 
+    [SerializeField]
+    private Rigidbody2D rb;
+
     public float Health 
     { 
         get => health;
         set => health = value;
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    private void Update()
+    {
+        //Health check
+        if (health <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        MoveToPlayer();
+    }
+
+    private void MoveToPlayer()
+    {
+        //get direction to player as vector
+        Vector3 pPos = GameManager.Instance.playerRef.position;
+        Vector3 playerDir = (pPos - gameObject.transform.position).normalized;
+
+        //Implicit conversion to vec2 for 2D gameplay
+        Vector2 playerDir2D = playerDir;
+
+        //Stop if within attack range
+        if (Vector3.Distance(gameObject.transform.position, pPos) > maxDistance) {
+            //move in direction of player at movespeed
+            rb.velocity = playerDir2D * moveSpeed;
+        } else {
+            rb.velocity = Vector2.zero;
+        }
+    }
+
     public void Damage(float amount)
     {
-        //Safley handle damage using health manager
+        //Returns health value after damage is applie
         health = HealthManager.HandleDamage(health, amount, healthBar);
     }
 
@@ -50,20 +96,5 @@ public class Enemy : MonoBehaviour, IDamageable
             float val = (health / 100f);
             healthBar.localScale = new Vector3(val, 1f);
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //get vector to player
-
-        //move in direction of player at movespeed
-
     }
 }

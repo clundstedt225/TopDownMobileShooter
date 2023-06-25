@@ -520,6 +520,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 615298076}
+  - component: {fileID: 615298077}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -542,6 +543,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &615298077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615298075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea7d2ea26fbefa4494a97007ffd9149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRef: {fileID: 1128321961}
 --- !u!1 &710291187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,7 +1029,7 @@ MonoBehaviour:
   rb: {fileID: 1128321958}
   joystick: {fileID: 287606152}
   aimTransform: {fileID: 1316008937}
-  speed: 1.5
+  speed: 1.2
 --- !u!4 &1128321961
 Transform:
   m_ObjectHideFlags: 0
@@ -1299,9 +1313,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  moveSpeed: 2
+  moveSpeed: 0.3
+  maxDistance: 1
   attackDamage: 5
   healthBar: {fileID: 1867400031}
+  rb: {fileID: 1417033330}
 --- !u!1 &1585252971
 GameObject:
   m_ObjectHideFlags: 0
